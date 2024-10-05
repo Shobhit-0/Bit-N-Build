@@ -103,9 +103,10 @@ while True:
             cvzone.cornerRect(img,(x1,y1,w,h))
             #confidence
             conf=math.ceil(box.conf[0]*100)/100
+            cls=int(box.cls[0])
             cvzone.putTextRect(img,f'{classnames[cls]} {conf}',(max(0,x1),max(35,y1)),scale=1,thickness=1,offset=5)
             #class
-            cls=int(box.cls[0])
+            
    
     cv2.imshow("webcam",img)
     time.sleep(wait_time)
