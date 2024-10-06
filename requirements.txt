@@ -1,0 +1,14 @@
+pip install ultralytics
+pip install cv2
+pip install time
+pip install pandas
+pip install mysql.connector
+pip install pywhatkit
+pip install datetime
+pip install keyboard
+pip install selenium
+pip install numpy
+pip install matplotlip
+pip install tensorflow
+pip install keras
+pip install scikit-learn
