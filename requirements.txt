@@ -1,6 +1,7 @@
 pip install ultralytics
 pip install cv2
 pip install time
+pip install cvzone
 pip install pandas
 pip install mysql.connector
 pip install pywhatkit
