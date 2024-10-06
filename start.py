@@ -5,8 +5,21 @@ import time
 import cvzone
 import pandas as pd
 import mysql.connector as sql
+import pywhatkit
+import datetime
+import keyboard
+from selenium import webdriver
+driver=webdriver.Chrome()
 cn=sql.connect(user="root", password="admin", host="localhost", database="management")
 cr=cn.cursor(buffered=True)
+alpha=True
+name=input("Enter name of user to check: ")
+query="Select * from contactreal where name=%s"
+cr.execute(query,(name,))
+details=cr.fetchall()
+print(details)
+num=int(details[0][1])
+print(num)
 classnames={0: 'person',
  1: 'bicycle',
  2: 'car',
@@ -92,9 +105,10 @@ wait_time=5
 index=[0]*80
 cap=cv2.VideoCapture(0) #instead of 0 enter url here, i.e. the url of the cctv footage
 try:
-    cr.execute("Create table bakwas(name varchar(30), amount int);")
+    cr.execute("Create table crockery(name varchar(30), amount int);")
 except:
     pass
+
 cap.set(3,490)
 cap.set(4,320)
 model=YOLO("yolov8l.pt")
@@ -132,19 +146,32 @@ while True:
    
     cv2.imshow("webcam",img)
     for i in cutlery:
-        query="Insert into bakwas values(%s,%s);"
+        query="Insert into crockery values(%s,%s);"
         a=(i,cutlery[i])
         cr.execute(query,a)
         cn.commit()
     
     
     time.sleep(wait_time)
-    cr.execute("Select * from bakwas;")
+    cr.execute("Select * from crockery;")
     result=cr.fetchall()
+    
     for row in result:
         print(row)
+    if alpha:
+        initial=cutlery
+    if cutlery["plate"]<initial["plate"]/10:
+        t=datetime.datetime.now()
+        h=t.strftime("%H")
+        m=t.strftime("%M")
+        pywhatkit.sendwhatmsg(f"+91{int(num)}", "LOW PLATES!!!",int(h),int(m)+2)
+        
+        time.sleep(20)
+        keyboard.press_and_release('enter')
+        keyboard.press_and_release('ctrl+w')
     cutlery={"spoon":0,"plate":0,"fork":0,"knife":0,"wineglass":0,"person":0}
-    cr.execute("DELETE FROM bakwas;")
+    alpha=False
+    cr.execute("DELETE FROM crockery;")
     if (cv2.waitKey(1)==ord('e')):
         break
 cap.release()
