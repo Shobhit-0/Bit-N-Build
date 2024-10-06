@@ -17,9 +17,7 @@ name=input("Enter name of user to check: ")
 query="Select * from contactreal where name=%s"
 cr.execute(query,(name,))
 details=cr.fetchall()
-print(details)
 num=int(details[0][1])
-print(num)
 classnames={0: 'person',
  1: 'bicycle',
  2: 'car',
@@ -140,7 +138,6 @@ while True:
                 cutlery["wineglass"]+=1
             if classnames[cls] == 'person':
                 cutlery["person"]+=1
-            print(cutlery)
             #class
             
    
@@ -160,11 +157,11 @@ while True:
         print(row)
     if alpha:
         initial=cutlery
-    if cutlery["plate"]<initial["plate"]/10:
+    if cutlery["spoon"]<initial["spoon"]/10:
         t=datetime.datetime.now()
         h=t.strftime("%H")
         m=t.strftime("%M")
-        pywhatkit.sendwhatmsg(f"+91{int(num)}", "LOW PLATES!!!",int(h),int(m)+2)
+        pywhatkit.sendwhatmsg(f"+91{int(num)}", "LOW SPOONS!!!",int(h),int(m)+2)
         
         time.sleep(20)
         keyboard.press_and_release('enter')
