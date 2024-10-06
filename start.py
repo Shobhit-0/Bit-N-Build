@@ -4,9 +4,9 @@ import math
 import time
 import cvzone
 import pandas as pd
-import _mysql_connector as sql
+import mysql.connector as sql
 cn=sql.connect(user="root", password="admin", host="localhost", database="management")
-cr=cn.cursor()
+cr=cn.cursor(buffered=True)
 classnames={0: 'person',
  1: 'bicycle',
  2: 'car',
@@ -91,7 +91,10 @@ cutlery={"spoon":0,"plate":0,"fork":0,"knife":0,"wineglass":0,"person":0}
 wait_time=5
 index=[0]*80
 cap=cv2.VideoCapture(0) #instead of 0 enter url here, i.e. the url of the cctv footage
-cr.execute("Create table utensils(utensil name varchar(30), amount int);")
+try:
+    cr.execute("Create table bakwas(name varchar(30), amount int);")
+except:
+    pass
 cap.set(3,490)
 cap.set(4,320)
 model=YOLO("yolov8l.pt")
@@ -128,9 +131,20 @@ while True:
             
    
     cv2.imshow("webcam",img)
-
+    for i in cutlery:
+        query="Insert into bakwas values(%s,%s);"
+        a=(i,cutlery[i])
+        cr.execute(query,a)
+        cn.commit()
+    
+    
     time.sleep(wait_time)
+    cr.execute("Select * from bakwas;")
+    result=cr.fetchall()
+    for row in result:
+        print(row)
     cutlery={"spoon":0,"plate":0,"fork":0,"knife":0,"wineglass":0,"person":0}
+    cr.execute("DELETE FROM bakwas;")
     if (cv2.waitKey(1)==ord('e')):
         break
 cap.release()
