@@ -3,6 +3,10 @@ import cv2
 import math
 import time
 import cvzone
+import pandas as pd
+import _mysql_connector as sql
+cn=sql.connect(user="root", password="admin", host="localhost", database="management")
+cr=cn.cursor()
 classnames={0: 'person',
  1: 'bicycle',
  2: 'car',
@@ -83,9 +87,11 @@ classnames={0: 'person',
  77: 'teddy bear',
  78: 'hair drier',
  79: 'toothbrush'}
+cutlery={"spoon":0,"plate":0,"fork":0,"knife":0,"wineglass":0,"person":0}
 wait_time=5
 index=[0]*80
 cap=cv2.VideoCapture(0) #instead of 0 enter url here, i.e. the url of the cctv footage
+cr.execute("Create table utensils(utensil name varchar(30), amount int);")
 cap.set(3,490)
 cap.set(4,320)
 model=YOLO("yolov8l.pt")
@@ -105,12 +111,28 @@ while True:
             conf=math.ceil(box.conf[0]*100)/100
             cls=int(box.cls[0])
             cvzone.putTextRect(img,f'{classnames[cls]} {conf}',(max(0,x1),max(35,y1)),scale=1,thickness=1,offset=5)
+            if classnames[cls] == 'spoon':
+                cutlery["spoon"]+=1
+            if classnames[cls] == 'fork':
+                cutlery["fork"]+=1
+            if classnames[cls] == 'plate':
+                cutlery["plate"]+=1
+            if classnames[cls] == 'knife':
+                cutlery["knife"]+=1
+            if classnames[cls] == 'wineglass':
+                cutlery["wineglass"]+=1
+            if classnames[cls] == 'person':
+                cutlery["person"]+=1
+            print(cutlery)
             #class
             
    
     cv2.imshow("webcam",img)
+
     time.sleep(wait_time)
+    cutlery={"spoon":0,"plate":0,"fork":0,"knife":0,"wineglass":0,"person":0}
     if (cv2.waitKey(1)==ord('e')):
         break
 cap.release()
+pd.read_sql
 cv2.destroyAllWindows()
